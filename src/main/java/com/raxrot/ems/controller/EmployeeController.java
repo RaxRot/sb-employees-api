@@ -2,6 +2,7 @@ package com.raxrot.ems.controller;
 
 import com.raxrot.ems.dto.EmployeeDTO;
 import com.raxrot.ems.service.EmployeeService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+    public ResponseEntity<EmployeeDTO> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
         log.info("Creating employee with email: {}", employeeDTO.getEmail());
         EmployeeDTO savedEmployee = employeeService.createEmployee(employeeDTO);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
@@ -40,7 +41,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+    public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable Long id,@Valid @RequestBody EmployeeDTO employeeDTO) {
         log.info("Updating employee with id: {}", id);
         EmployeeDTO savedEmployee = employeeService.updateEmployee(id, employeeDTO);
         return new ResponseEntity<>(savedEmployee, HttpStatus.OK);
