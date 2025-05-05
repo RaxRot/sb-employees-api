@@ -4,4 +4,5 @@ import com.raxrot.ems.dto.EmployeeDTO;
 
 public interface EmployeeService {
     EmployeeDTO createEmployee(EmployeeDTO employeeDTO);
+    EmployeeDTO getEmployeeById(Long id);
 }
