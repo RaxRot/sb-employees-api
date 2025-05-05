@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,5 +39,25 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.findAll().stream()
                 .map(employee -> modelMapper.map(employee, EmployeeDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
+        if (!employeeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Employee with id " + id + " not found");
+        }
+
+        Optional<Employee> existing = employeeRepository.findByEmail(employeeDTO.getEmail());
+        if (existing.isPresent() && !existing.get().getId().equals(id)) {
+            throw new IllegalArgumentException("Email " + employeeDTO.getEmail() + " is already in use");
+        }
+
+        Employee employeeFromDb = employeeRepository.findById(id).get();
+        employeeFromDb.setFirstName(employeeDTO.getFirstName());
+        employeeFromDb.setLastName(employeeDTO.getLastName());
+        employeeFromDb.setEmail(employeeDTO.getEmail());
+
+        Employee savedEmployee = employeeRepository.save(employeeFromDb);
+        return modelMapper.map(savedEmployee, EmployeeDTO.class);
     }
 }
