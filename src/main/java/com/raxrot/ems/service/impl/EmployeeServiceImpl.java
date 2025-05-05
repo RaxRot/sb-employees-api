@@ -8,6 +8,9 @@ import com.raxrot.ems.service.EmployeeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
@@ -28,5 +31,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO getEmployeeById(Long id) {
         Employee employee = employeeRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Employee with id " + id + " not found"));
         return modelMapper.map(employee, EmployeeDTO.class);
+    }
+
+    @Override
+    public List<EmployeeDTO> getAllEmployees() {
+        return employeeRepository.findAll().stream()
+                .map(employee -> modelMapper.map(employee, EmployeeDTO.class))
+                .collect(Collectors.toList());
     }
 }
